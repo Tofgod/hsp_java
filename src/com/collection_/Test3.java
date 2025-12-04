@@ -31,10 +31,18 @@ public class Test3 {
 
         Vector vector = new Vector();
         // 底层是对象数组 可变数组
-        // 线程安全  效率不高  如果是无参 默认10 每次扩大2  指定大小 每次扩大2
+        // 线程安全  效率不高  如果是无参 默认10 每次扩大2  指定大小 每次扩大2  如果是有两个参 就按照第二个参数的大小进行扩容
         for (int i = 0; i <= 10; i++) {
             vector.add(i);
         }
+
+        arrayList.add("eqw");
+        arrayList.add(1,'c');
+        arrayList.remove("eqw");
+        arrayList.get(1);
+        arrayList.set(1,"t");
+        arrayList.contains("t");
+
 
     }
 }

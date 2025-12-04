@@ -3,7 +3,6 @@ package com.collection_;
 
 
 
-import com.sun.javafx.scene.control.skin.VirtualFlow;
 
 import java.util.*;
 
@@ -53,6 +52,8 @@ public class Test {
         List.add("21341");
         List.removeAll(List1);
         System.out.println(List);
+
+
 
     }
 }

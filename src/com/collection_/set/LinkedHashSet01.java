@@ -1,6 +1,7 @@
 package com.collection_.set;
 
 import java.util.LinkedHashSet;
+import java.util.Set;
 
 public class LinkedHashSet01 {
     public static void main(String[] args) {
@@ -10,7 +11,7 @@ public class LinkedHashSet01 {
         //不允许添加重复元素
         // 每一个节点拥有 next pre 属性
         // add 添加的时候 会先计算hashcode 再获得索引值 插入到数组 进行重复比较 相同则不添加 不同 就添加 同时绑定到双向链表
-        LinkedHashSet linkedHashSet = new LinkedHashSet();
+        Set linkedHashSet = new LinkedHashSet();
 
         linkedHashSet.add(1);
         linkedHashSet.add(5);

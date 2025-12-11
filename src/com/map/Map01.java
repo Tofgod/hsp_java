@@ -1,7 +1,9 @@
 package com.map;
 
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
+import java.util.Set;
 
 public class Map01 {
     public static void main(String[] args) {
@@ -22,6 +24,23 @@ public class Map01 {
         hashMap.put("r",'l');
         System.out.println(hashMap);
         System.out.println(hashMap.get("r"));
+
+
+        Set set = hashMap.entrySet();
+        System.out.println(set.getClass());
+        for (Object o : set) {
+            System.out.println(o);
+            Map.Entry e = (Map.Entry) o ;
+            System.out.println(e.getKey());
+            System.out.println(e.getValue());
+        }
+
+        Iterator iterator = set.iterator();
+        while (iterator.hasNext()) {
+            Map.Entry next = (Map.Entry) iterator.next();
+            System.out.println(next.getKey());
+            System.out.println(next.getValue());
+        }
 
 
     }

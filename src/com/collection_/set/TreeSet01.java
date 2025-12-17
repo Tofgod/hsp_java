@@ -19,6 +19,8 @@ public class TreeSet01 {
         treeSet.add("12453");
         treeSet.add("45676");
 
+        //根据比较的规则 会影响是否能add进去  compare 返回0 即为相同 相同则无法添加
+
         System.out.println(treeSet);
     }
 }

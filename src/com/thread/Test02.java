@@ -15,11 +15,11 @@ public class Test02 {
 //        ticket1.start();
 //        ticket2.start();
 
-        Ticket1 ticket1 = new Ticket1();
+        Ticket2 Ticket2 = new Ticket2();
 
-        Thread thread0 = new Thread(ticket1);
-        Thread thread1 = new Thread(ticket1);
-        Thread thread2 = new Thread(ticket1);
+        Thread thread0 = new Thread(Ticket2);
+        Thread thread1 = new Thread(Ticket2);
+        Thread thread2 = new Thread(Ticket2);
 
         thread0.start();
         thread1.start();
@@ -56,6 +56,28 @@ class Ticket1 implements Runnable{
 
     @Override
     public void run() {
+        while (true){
+            if (counts <= 0){
+                break;
+            }
+            try {
+                Thread.sleep(50);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+            System.out.println("窗口" + Thread.currentThread().getName() + "售出一张票" + "剩余" + (--counts));
+        }
+    }
+}
+
+
+// 使用 synchronized 同步方法
+class Ticket2 implements Runnable{
+
+    private  int counts = 100; // static 修饰 被所有类共享
+
+    @Override
+    public synchronized void run() {
         while (true){
             if (counts <= 0){
                 break;

@@ -8,3 +8,14 @@ public class synchronized_ {
 
     }
 }
+
+class Op extends Thread{
+
+
+
+
+    @Override
+    public void run() {
+
+    }
+}

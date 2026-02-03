@@ -77,17 +77,36 @@ class Ticket2 implements Runnable{
     private  int counts = 100; // static 修饰 被所有类共享
 
     @Override
-    public synchronized void run() {
+    public void run() {
         while (true){
-            if (counts <= 0){
-                break;
-            }
+
+            boolean b = sell();
+
             try {
                 Thread.sleep(50);
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }
-            System.out.println("窗口" + Thread.currentThread().getName() + "售出一张票" + "剩余" + (--counts));
+
+            if (b){
+                break;
+            }
         }
+    }
+
+    // public synchronized boolean sell() 是一个同步方法  锁加在this对象上  // 也可以是其他对象（要求是同一个对象）
+    // 也可以在代码块加锁  // 也可以是其他对象（要求是同一个对象）
+    public /*synchronized*/ boolean sell(){
+
+        // 代码块加锁 同步代码块
+        synchronized(this){
+            if (counts <= 0){
+                System.out.println("结束");
+                return true;
+            }
+        }
+
+        System.out.println("窗口" + Thread.currentThread().getName() + "售出一张票" + "剩余" + (--counts));
+        return false ;
     }
 }

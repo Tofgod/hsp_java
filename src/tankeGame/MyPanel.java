@@ -5,7 +5,7 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.util.Vector;
 
-public class MyPanel extends Panel implements KeyListener {
+public class MyPanel extends Panel implements KeyListener ,Runnable {
 
     MyTanK myTanK;
 
@@ -16,7 +16,10 @@ public class MyPanel extends Panel implements KeyListener {
     public MyPanel(){
         myTanK = new MyTanK(0,0);
         for (int i = 0; i < enTankSize; i++) {
-            enTanks.add(new EnTank(100 * (i + 1), 0 ));
+            EnTank enTank = new EnTank(100 * (i + 1), 0);
+            Thread thread = new Thread(enTank);
+            thread.start();
+            enTanks.add(enTank);
         }
     }
 
@@ -39,6 +42,9 @@ public class MyPanel extends Panel implements KeyListener {
         if (e.getKeyCode() == KeyEvent.VK_RIGHT){
             myTanK.right();
         }
+        if(e.getKeyCode() == KeyEvent.VK_J){
+            myTanK.shot();
+        }
         this.repaint();
     }
 
@@ -48,18 +54,53 @@ public class MyPanel extends Panel implements KeyListener {
     }
 
 
+    @Override
+    public void run() {
+        while (true){
 
+            try {
+                Thread.sleep(100);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
 
+            repaint();
+        }
+    }
 
     @Override
     public void paint(Graphics g) {
         super.paint(g);
         drawTank(myTanK.getX(), myTanK.getY(), g , myTanK.getDirect() , myTanK.getType());
 
+
+        // 子弹
+        for (int i = 0; i < myTanK.shots.size(); i++) {
+            Shot shot = myTanK.shots.get(i);
+            if (shot.isActive){
+                g.fillOval(shot.x ,shot.y ,10 ,10 );
+            }
+        }
+
+
         for (int i = 0; i < enTanks.size(); i++) {
             EnTank enTank = enTanks.get(i);
             drawTank(enTank.getX(),enTank.getY(),g,enTank.getDirect(), enTank.getType());
+            enTankShot(enTank,g);
         }
+    }
+
+
+    public void enTankShot(Tank tank , Graphics g){
+        // 完善敌方坦克射击算法
+        tank.shot();
+        for (int j = 0; j < tank.shots.size(); j++) {
+            Shot shot = tank.shots.get(j);
+            if (shot.isActive){
+                g.fillOval(shot.x ,shot.y ,10 ,10 );
+            }
+        }
+
     }
 
     /**
@@ -111,8 +152,6 @@ public class MyPanel extends Panel implements KeyListener {
                 g.drawLine(x+30,y+25,x,y+25);
                 break;
         }
-
-
 
     }
 }

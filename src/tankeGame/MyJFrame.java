@@ -10,6 +10,8 @@ public class MyJFrame extends JFrame {
     public MyJFrame(){
         //初始化面板
         myPanel = new MyPanel();
+        Thread thread = new Thread(myPanel);
+        thread.start();
         //给窗口 JFrame 添加面板
         this.add(myPanel);
         this.addKeyListener(myPanel);

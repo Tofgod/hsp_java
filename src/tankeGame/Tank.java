@@ -1,5 +1,7 @@
 package tankeGame;
 
+import java.util.Vector;
+
 public class Tank {
     private int X;
     private int Y;
@@ -10,6 +12,8 @@ public class Tank {
     private int range_h;
 
 
+    // 子弹
+    Vector<Shot> shots = new Vector<>();
 
     public void up(){
         direct = 0;
@@ -33,6 +37,10 @@ public class Tank {
     public Tank(int x, int y) {
         X = x;
         Y = y;
+    }
+
+    public void shot(){
+
     }
 
     public int getType() {

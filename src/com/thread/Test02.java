@@ -109,4 +109,11 @@ class Ticket2 implements Runnable{
         System.out.println("窗口" + Thread.currentThread().getName() + "售出一张票" + "剩余" + (--counts));
         return false ;
     }
+
+    //锁是加在 我们这个类上 class.类名
+    public static /*synchronized*/ void a(){
+        synchronized(Ticket2.class){
+
+        }
+    }
 }

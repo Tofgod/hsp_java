@@ -1,5 +1,6 @@
 package tankeGame;
 
+
 import java.util.Random;
 
 public class EnTank extends Tank implements Runnable{
@@ -12,10 +13,16 @@ public class EnTank extends Tank implements Runnable{
     // 随机冷却时间偏移
     private int cooldownVariance = 400; // ±400ms的随机偏移
 
+    // 在某一个方向走过了多少步
+    private int stepFD = 0 ;
+
+
+
     public EnTank(int x, int y ) {
         super(x, y);
-        this.setDirect(2);
+        this.setDirect((int)(Math.random() * 4 ));
         this.setType(1);
+        this.setSpeed(10);
     }
 
     public void shot(){
@@ -59,11 +66,46 @@ public class EnTank extends Tank implements Runnable{
 
     @Override
     public void run() {
-        move();
+        while (isActive){
+            move();
+            shot();
+            try {
+                Thread.sleep(100);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+        }
     }
 
 
     public void move(){
+
+        //在某一个方向走多少步的阈值
+        if ((getDirect()==0 && getY() < 40 )|| (getDirect()==1 && getX() > 740 ) || (getDirect()==3 && getY() > 740 ) || (getDirect()==4 && getX() < 40 )){
+            stepFD = 0;
+            setDirect((int)(Math.random() * 4 ));
+        }
+        if(stepFD > (int)(Math.random() * 6 ) + 4 ){
+            stepFD = 0;
+            setDirect((int)(Math.random() * 4 ));
+        }else{
+            switch (getDirect()){
+                case 0 :
+                    up();
+                    break;
+                case 1:
+                    right();
+                    break;
+                case 2:
+                    down();
+                    break;
+                case 3:
+                    left();
+                    break;
+            }
+            stepFD ++ ;
+        }
+
 
     }
 

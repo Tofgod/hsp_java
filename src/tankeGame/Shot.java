@@ -40,8 +40,6 @@ public class Shot implements Runnable{
                     break;
             }
 
-            System.out.println("方向：" + direct);
-            System.out.println("子弹坐标:" + x );
 
             if (!(x >= 0 && y >=0 && x <= 800 && y<=800)){
                 isActive = false;

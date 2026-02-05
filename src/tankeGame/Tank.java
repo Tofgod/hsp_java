@@ -10,10 +10,11 @@ public class Tank {
     private int type;
     private int range_w;
     private int range_h;
+    protected boolean isActive = true;
 
 
     // 子弹
-    Vector<Shot> shots = new Vector<>();
+    protected Vector<Shot> shots = new Vector<>();
 
     public void up(){
         direct = 0;
@@ -22,10 +23,12 @@ public class Tank {
     }
     public void down(){
         direct = 2;
+        if (Y > 760) return;
         Y += speed;
     }
     public void right(){
         direct = 1;
+        if (X > 760) return;
         X += speed;
     }
     public void left(){

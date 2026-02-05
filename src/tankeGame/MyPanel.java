@@ -1,8 +1,12 @@
 package tankeGame;
 
+import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
+import java.util.Iterator;
 import java.util.Vector;
 
 public class MyPanel extends Panel implements KeyListener ,Runnable {
@@ -10,17 +14,46 @@ public class MyPanel extends Panel implements KeyListener ,Runnable {
     MyTanK myTanK;
 
     Vector<EnTank> enTanks = new Vector<>();
+    Vector<Bomb> bombs = new Vector<>();
+
+    //存在懒加载的问题
+//    Image image1;
+//    Image image2;
+//    Image image3;
+
+    BufferedImage image1;
+    BufferedImage image2;
+    BufferedImage image3;
+
 
     int enTankSize = 3;
 
-    public MyPanel(){
+
+
+    public MyPanel()  {
         myTanK = new MyTanK(0,0);
         for (int i = 0; i < enTankSize; i++) {
-            EnTank enTank = new EnTank(100 * (i + 1), 0);
+
+            EnTank enTank = new EnTank((int)(Math.random() * 500 ),(int)(Math.random() * 500 ));
             Thread thread = new Thread(enTank);
             thread.start();
             enTanks.add(enTank);
         }
+
+//        image1 = Toolkit.getDefaultToolkit().getImage(Panel.class.getResource("/b1.png"));
+//        image2 = Toolkit.getDefaultToolkit().getImage(Panel.class.getResource("/b2.png"));
+//        image3 = Toolkit.getDefaultToolkit().getImage(Panel.class.getResource("/b3.png"));
+
+        try {
+             image1 = ImageIO.read(Panel.class.getResource("/b1.png"));
+             image2 = ImageIO.read(Panel.class.getResource("/b2.png"));
+             image3 = ImageIO.read(Panel.class.getResource("/b3.png"));
+
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+
     }
 
     @Override
@@ -71,36 +104,67 @@ public class MyPanel extends Panel implements KeyListener ,Runnable {
     @Override
     public void paint(Graphics g) {
         super.paint(g);
-        drawTank(myTanK.getX(), myTanK.getY(), g , myTanK.getDirect() , myTanK.getType());
 
 
-        // 子弹
-        for (int i = 0; i < myTanK.shots.size(); i++) {
-            Shot shot = myTanK.shots.get(i);
-            if (shot.isActive){
-                g.fillOval(shot.x ,shot.y ,10 ,10 );
-            }
+        if(myTanK.isActive){
+            drawTank(myTanK.getX(), myTanK.getY(), g , myTanK.getDirect() , myTanK.getType());
         }
-
+        // 子弹
+        tankShot(myTanK,g);
 
         for (int i = 0; i < enTanks.size(); i++) {
             EnTank enTank = enTanks.get(i);
-            drawTank(enTank.getX(),enTank.getY(),g,enTank.getDirect(), enTank.getType());
-            enTankShot(enTank,g);
+            hitTank(myTanK,enTank);
+            hitTank(enTank,myTanK);
+            if(enTank.isActive){
+                drawTank(enTank.getX(),enTank.getY(),g,enTank.getDirect(), enTank.getType());
+            }
+            tankShot(enTank,g);
         }
+
+        Iterator<Bomb> iterator = bombs.iterator();
+        while (iterator.hasNext()) {
+            Bomb bomb =  iterator.next();
+            System.out.println(bomb.live);
+            if (bomb.live > 6) {
+                g.drawImage(image1 , bomb.x,bomb.y ,60 ,60 ,this  );
+            }else if (bomb.live > 3){
+                g.drawImage(image2 , bomb.x,bomb.y ,60 ,60 ,this  );
+            }else  if(bomb.live > 0 ){
+                g.drawImage(image3 , bomb.x,bomb.y ,60 ,60 ,this  );
+            }
+            bomb.delLive();
+            if (!bomb.isActive){
+                iterator.remove();
+            }
+        }
+
     }
 
 
-    public void enTankShot(Tank tank , Graphics g){
-        // 完善敌方坦克射击算法
-        tank.shot();
+    public void tankShot(Tank tank , Graphics g){
         for (int j = 0; j < tank.shots.size(); j++) {
             Shot shot = tank.shots.get(j);
             if (shot.isActive){
                 g.fillOval(shot.x ,shot.y ,10 ,10 );
             }
         }
+    }
 
+    public void hitTank( Tank myTanK , Tank enTank){
+        //判断子弹 跟 坦克 是否重叠 即被打中
+        Iterator<Shot> iterator = myTanK.shots.iterator();
+        while (iterator.hasNext()) {
+            Shot shot =  iterator.next();
+            // shot 的位置 跟 enTank 的位置进行比较
+            if (shot.isActive && enTank.isActive && ((enTank.getX() < shot.x)  && ( enTank.getX() + 60 > shot.x)) &&
+                    ((enTank.getY() < shot.y ) && (enTank.getY() + 60 > shot.y))){
+                enTank.isActive = false;
+                shot.isActive = false;
+                System.out.println("坦克被击中");
+                bombs.add(new Bomb(enTank.getX(),enTank.getY()));
+            }
+        }
     }
 
     /**

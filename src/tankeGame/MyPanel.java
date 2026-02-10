@@ -5,6 +5,7 @@ import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.image.BufferedImage;
+import java.io.FileReader;
 import java.io.IOException;
 import java.util.Iterator;
 import java.util.Vector;
@@ -44,14 +45,14 @@ public class MyPanel extends Panel implements KeyListener ,Runnable {
 //        image2 = Toolkit.getDefaultToolkit().getImage(Panel.class.getResource("/b2.png"));
 //        image3 = Toolkit.getDefaultToolkit().getImage(Panel.class.getResource("/b3.png"));
 
-        try {
-             image1 = ImageIO.read(Panel.class.getResource("/b1.png"));
-             image2 = ImageIO.read(Panel.class.getResource("/b2.png"));
-             image3 = ImageIO.read(Panel.class.getResource("/b3.png"));
-
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+//        try {
+//             image1 = ImageIO.read(Panel.class.getResource("/b1.png"));
+//             image2 = ImageIO.read(Panel.class.getResource("/b2.png"));
+//             image3 = ImageIO.read(Panel.class.getResource("/b3.png"));
+//
+//        } catch (IOException e) {
+//            throw new RuntimeException(e);
+//        }
 
 
     }
@@ -101,9 +102,24 @@ public class MyPanel extends Panel implements KeyListener ,Runnable {
         }
     }
 
+
+
+    public void showInfo(Graphics g){
+        g.setColor(Color.BLACK);
+        Font font = new Font("宋体" , Font.BOLD , 25);
+        g.setFont(font);
+
+        g.drawString("累计击毁地方坦克" , 1020 , 30);
+        drawTank(1020 , 60 , g , 0 , 0 );
+        g.setColor(Color.BLACK);
+        g.drawString(Recorder.getCutTank() + "" , 1100 , 100);
+    }
+
     @Override
     public void paint(Graphics g) {
         super.paint(g);
+
+        showInfo(g);
 
 
         if(myTanK.isActive){
@@ -162,6 +178,9 @@ public class MyPanel extends Panel implements KeyListener ,Runnable {
                 enTank.isActive = false;
                 shot.isActive = false;
                 System.out.println("坦克被击中");
+                if (enTank instanceof EnTank){
+                    Recorder.CutT();
+                }
                 bombs.add(new Bomb(enTank.getX(),enTank.getY()));
             }
         }

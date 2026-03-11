@@ -28,8 +28,8 @@ public class Test01 {
             byte[] bytes = new byte[1024];
             int len = 0 ;
             while ((len = bufferedInputStream.read(bytes)) != -1){
-                bufferedOutputStream.write(bytes);         // 边度边写
-//                System.out.println(2);
+                bufferedOutputStream.write(bytes , 0 , len);         // 边度边写
+                System.out.println(2);
             }
 
 
@@ -70,9 +70,8 @@ public class Test01 {
             byte[] bytes = new byte[1024];
             int len = 0 ;
             while ((len = bufferedInputStream.read(bytes)) != -1){
-//                Thread.sleep(1000);
-                bufferedOutputStream.write(bytes);
-//                System.out.println(1);
+                bufferedOutputStream.write(bytes , 0 , len);
+                System.out.println(1);
             }
 
             socket.shutdownOutput();

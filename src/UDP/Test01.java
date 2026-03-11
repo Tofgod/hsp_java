@@ -48,6 +48,7 @@ public class Test01 {
             DatagramSocket datagramSocket = new DatagramSocket(9998); // 我的端口
             String s = "你好， 我是9998" ;
             byte[] bytes1 = s.getBytes();
+//            InetAddress.getByName()
             DatagramPacket datagramPacket = new DatagramPacket(bytes1 , bytes1.length , InetAddress.getLocalHost() , 9999); // 创建数据包指定端口
             datagramSocket.send(datagramPacket);
             datagramSocket.close();

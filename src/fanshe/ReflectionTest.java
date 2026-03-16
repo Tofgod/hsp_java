@@ -13,7 +13,8 @@ public class ReflectionTest {
 
         Properties properties = new Properties();
         try {
-            properties.load(new FileInputStream("/Users/crilv/Desktop/java项目/chapter10/src/fanshe/re.properties"));
+//            properties.load(new FileInputStream("/Users/crilv/Desktop/java项目/chapter10/src/fanshe/re.properties"));
+            properties.load(new FileInputStream("D:\\JavaProject\\hsp_java\\src\\fanshe/re.properties"));
 
             String classfullpath = properties.get("classfullpath").toString();
             String method = properties.get("method").toString();
@@ -48,6 +49,9 @@ public class ReflectionTest {
 
             // 可以做到在不修改源码的情况下 进行程序的更改 满足开闭原则    比如类 的方法 名称 的信息 都在通过在配置文件中记录的
             // 在上述流程固定的情况下 只用修改配置问价 就可以达到不修改源码 就可以加载不同的类 调用不同的方法
+
+            // 程序运行反射在运行期间 获取类的信息
+            // 加载完信息后 会生成一个 Class类型类的对象实例  一个类只能在堆中产生一个Class类型类  它包含了加载对象的全部信息  像一面镜子 反射出类的所有信息 所以称之为反射
 
 
 

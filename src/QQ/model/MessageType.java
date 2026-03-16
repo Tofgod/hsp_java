@@ -10,5 +10,7 @@ public interface MessageType {
     String MESSAGE_SEND_ONLINE_USERS = "5"; // 用户列表信息
     String MESSAGE_EXIT = "6"; //退出
     String MESSAGE_SEND_FOR_ALL_USERS = "7";
+    String MESSAGE_SEND_FILE = "8";
+    String MESSAGE_SERVER_AD = "9";
 
 }

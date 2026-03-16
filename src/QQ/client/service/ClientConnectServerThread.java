@@ -5,6 +5,8 @@ import QQ.model.MessageType;
 import QQ.model.User;
 
 
+import java.io.BufferedOutputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.net.Socket;
@@ -45,7 +47,29 @@ public class ClientConnectServerThread extends Thread{
                     }
                 }else if(msg.getMesType().equals(MessageType.MESSAGE_COMM_MES)){
                     System.out.println("收到消息 来自于" + msg.getSendUserId() + "内容是 ： " + msg.getContent());
+                }else if(msg.getMesType().equals(MessageType.MESSAGE_SEND_FOR_ALL_USERS)){
+                    System.out.println("收到消息 来自于" + msg.getSendUserId() + "内容是 ： " + msg.getContent());
+                }else if(msg.getMesType().equals(MessageType.MESSAGE_SEND_FILE)){
+                    System.out.println("收到消息 来自于" + msg.getSendUserId() + "的文件：" + msg.getContent());
+                    String mkdir = "/Users/crilv/Desktop/java项目/chapter10/src/QQ/file/get/" + msg.getContent() ;
+
+                    //方式一
+                    FileOutputStream fileOutputStream = new FileOutputStream(mkdir);
+                    fileOutputStream.write(msg.getFileByte());
+                    fileOutputStream.flush();
+                    fileOutputStream.close();
+
+
+//                   方式二
+//                    BufferedOutputStream bufferedOutputStream = new BufferedOutputStream(new FileOutputStream(mkdir));
+//                    bufferedOutputStream.write(msg.getFileByte());
+//                    bufferedOutputStream.flush();
+//                    bufferedOutputStream.close();
+
+                }else if(msg.getMesType().equals(MessageType.MESSAGE_SERVER_AD)){
+                    System.out.println("收到消息 来自于服务器的消息推送，内容是 ： " + msg.getContent());
                 }
+
 
             } catch (IOException | ClassNotFoundException e) {
                 throw new RuntimeException(e);

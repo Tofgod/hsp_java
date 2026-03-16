@@ -8,10 +8,7 @@ import QQ.model.User;
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 public class ServerConnectClientThread extends Thread{
 
@@ -25,6 +22,26 @@ public class ServerConnectClientThread extends Thread{
 
     @Override
     public void run() { // 可以发送 接受消息
+
+        ArrayList<Message> userMes = UsersMessages.getUserMes(user.getUserId());
+        if (userMes != null){
+            ObjectOutputStream objectOutputStream = null;
+            try {
+                objectOutputStream = new ObjectOutputStream(socket.getOutputStream());
+                Iterator<Message> iterator = userMes.iterator();
+                while (iterator.hasNext()) {
+                    Message next =  iterator.next();
+                    System.out.println(next.getContent());
+                    objectOutputStream.writeObject(next);
+                }
+                UsersMessages.delUserMes(user.getUserId());
+                System.out.println("离线消息发送完毕 删除消息缓存");
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
+
+
         while (true){
             try {
                 InputStream inputStream = socket.getInputStream();
@@ -45,7 +62,7 @@ public class ServerConnectClientThread extends Thread{
                     ManageServerConnectClientThread.delServerConnectClientThread(msg.getSendUserId());
                     System.out.println("删除了跟用户" + msg.getSendUserId() + "的 线程 ");
                     break;
-                } else if(msg.getMesType().equals(MessageType.MESSAGE_COMM_MES)){
+                } else if(msg.getMesType().equals(MessageType.MESSAGE_COMM_MES) || msg.getMesType().equals(MessageType.MESSAGE_SEND_FILE)){
                     String targetUserId = msg.getTargetUserId();
                     //获取目标线程转发用户的消息
                     System.out.println("接受到" + msg.getSendUserId() + "向" +  msg.getTargetUserId() + "发送的消息：" + msg.getContent() );
@@ -53,20 +70,25 @@ public class ServerConnectClientThread extends Thread{
                     //将消息存起来
                     if(serverConnectClientThread != null){  // 如果用户在线
                         serverConnectClientThread.sendMessage(msg); // 发送消息
+                    }else{
+                        // 如果用户不在线 将消息缓存到消息队列中 等用户上线的时候发送给用户
+                        System.out.println(targetUserId + "用户不在线 ， 将消息缓存到消息队列 ");
+                        UsersMessages.setUserMes(targetUserId , msg);
                     }
                 }else if(msg.getMesType().equals(MessageType.MESSAGE_SEND_FOR_ALL_USERS)){
-                    String targetUserId = msg.getTargetUserId();
                     //获取目标线程转发用户的消息
-                    System.out.println("接受到" + msg.getSendUserId() + "向" +  msg.getTargetUserId() + "发送的消息：" + msg.getContent() );
-                    ServerConnectClientThread serverConnectClientThread = ManageServerConnectClientThread.getServerConnectClientThread(targetUserId);
+                    System.out.println("接受到" + msg.getSendUserId() + "向所有在线用户" + "发送的消息：" + msg.getContent() );
                     //将消息存起来
-                    if(serverConnectClientThread != null){  // 如果用户在线
-                        serverConnectClientThread.sendMessage(msg); // 发送消息
+                    Iterator<String> iterator = ManageServerConnectClientThread.hm.keySet().iterator();
+                    while (iterator.hasNext()) {
+                        String next =  iterator.next();
+                        if (!next.equals(msg.getSendUserId())){  // 排除自己
+                            ServerConnectClientThread serverConnectClientThread = ManageServerConnectClientThread.getServerConnectClientThread(next);
+                            serverConnectClientThread.sendMessage(msg);
+                        }
+
                     }
                 }
-
-
-
 
             } catch (IOException | ClassNotFoundException e) {
                 throw new RuntimeException(e);
@@ -75,7 +97,7 @@ public class ServerConnectClientThread extends Thread{
         }
     }
 
-    private void sendMessage(Message msg){
+    public void sendMessage(Message msg){
         try {
             OutputStream outputStream = socket.getOutputStream();
             ObjectOutputStream objectOutputStream = new ObjectOutputStream(outputStream);

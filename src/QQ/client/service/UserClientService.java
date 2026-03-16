@@ -98,6 +98,67 @@ public class UserClientService {
         }
     }
 
+    public void sendFile(String targetUserId , String fileName ){
+
+        String mkdir = "/Users/crilv/Desktop/java项目/chapter10/src/QQ/file/send/" + fileName ;
+        File file = new File(mkdir);
+        if (!file.exists()){
+            System.out.println("要发送的文件不存在");
+            return;
+        }
+
+
+        Message message = new Message();
+        message.setSendUserId(user.getUserId());
+        message.setTargetUserId(targetUserId);
+        message.setMesType(MessageType.MESSAGE_SEND_FILE);
+        message.setContent(fileName);
+        ClientConnectServerThread clientConnectServerThread = ManageClientConnectServerThread.getClientConnectServerThread(user.getUserId());
+        Socket socket = clientConnectServerThread.getSocket(); // 获取到线程内的 socket
+
+        try {
+
+
+            // 方式一
+            byte[] bytes = new byte[(int)file.length()];
+            FileInputStream fileInputStream = new FileInputStream(file);
+            fileInputStream.read(bytes); // 读入到字节数组
+            message.setFileByte(bytes);
+            message.setFileLen((int)file.length());
+            fileInputStream.close();
+
+
+            // 方式二
+//            BufferedInputStream bufferedInputStream = new BufferedInputStream(new FileInputStream(mkdir));
+//            byte[] bytes = new byte[1024];
+//            byte[] allBytes = new byte[0];
+//            int len ;
+//            int allLen = 0;
+//            while ((len = bufferedInputStream.read(bytes)) != -1){
+//                allBytes = mergeArrays(allBytes , bytes);
+//                allLen +=len;
+//            }
+//            message.setFileByte(allBytes);
+//            message.setFileLen(allLen);
+//
+//            bufferedInputStream.close();
+//
+            ObjectOutputStream objectOutputStream = new ObjectOutputStream(socket.getOutputStream());
+            objectOutputStream.writeObject(message); // 发送请求
+
+
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public static byte[] mergeArrays(byte[] arr1, byte[] arr2) {
+        byte[] result = new byte[arr1.length + arr2.length];
+        System.arraycopy(arr1, 0, result, 0, arr1.length);
+        System.arraycopy(arr2, 0, result, arr1.length, arr2.length);
+        return result;
+    }
+
 
 
 }

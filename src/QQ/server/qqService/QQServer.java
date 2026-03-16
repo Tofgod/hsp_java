@@ -1,15 +1,19 @@
 package QQ.server.qqService;
 
+import QQ.client.service.UserClientService;
 import QQ.model.Message;
 import QQ.model.MessageType;
 import QQ.model.User;
+import QQ.utils.Utility;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class QQServer {
@@ -48,10 +52,11 @@ public class QQServer {
 
     public QQServer() {
         System.out.println("9999端口监听"); // 并实时监听链接状况 加入线程 开启与用户的socket链接
-
         try {
 
+
             ss = new ServerSocket(9999);
+            new ServerAdThread().start();
 
             while (true){
                 System.out.println("等待链接");

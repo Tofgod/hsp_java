@@ -18,6 +18,25 @@ public class Message implements Serializable {
     private String content;
     private String sendTime;
 
+    private byte[] fileByte;
+    private int fileLen;
+
+    public int getFileLen() {
+        return fileLen;
+    }
+
+    public void setFileLen(int fileLen) {
+        this.fileLen = fileLen;
+    }
+
+    public byte[] getFileByte() {
+        return fileByte;
+    }
+
+    public void setFileByte(byte[] fileByte) {
+        this.fileByte = fileByte;
+    }
+
     private String mesType; // [接口中定义消息类型]
 
     private HashMap<String , User> userDB = new HashMap<>();

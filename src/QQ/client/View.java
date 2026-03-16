@@ -56,8 +56,6 @@ public class View {
     private void menu( ){
         while (loop){
 
-            
-            System.out.println("登录成功，欢迎..........");
             System.out.println("1.显示在线用户列表");
             System.out.println("2.群发消息");
             System.out.println("3.私聊消息");
@@ -76,7 +74,6 @@ public class View {
                     System.out.print("请输入你要发送的话 ：");
                     String content1 = Utility.readString(500);
                     userClientService.sendMessToAll(content1);
-
                     break;
                 case "3":
                     System.out.println("私聊消息");
@@ -90,6 +87,14 @@ public class View {
                     break;
                 case "4":
                     System.out.println("发送文件");
+                    System.out.println("私聊消息");
+
+                    System.out.print("请输入你要发送的用户id ：");
+                    String targetUserId1 = Utility.readString(500);
+                    System.out.print("请输入发送的文件名 ：");
+                    String fileName = Utility.readString(500);
+                    userClientService.sendFile(targetUserId1 , fileName );
+
                     break;
                 case "9":
                     System.out.println("退出系统");

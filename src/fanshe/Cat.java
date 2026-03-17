@@ -12,4 +12,12 @@ public class Cat {
     public void cry(){
         System.out.println("cry,reflection");
     }
+
+    public Cat() {
+
+    }
+
+    public Cat(int a) {
+        this.a = a;
+    }
 }

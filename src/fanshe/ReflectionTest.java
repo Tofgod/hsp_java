@@ -3,9 +3,7 @@ package fanshe;
 import java.io.FileInputStream;
 import java.io.FileReader;
 import java.io.IOException;
-import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
+import java.lang.reflect.*;
 import java.util.Properties;
 
 public class ReflectionTest {
@@ -14,8 +12,8 @@ public class ReflectionTest {
 
         Properties properties = new Properties();
         try {
-            properties.load(new FileInputStream("/Users/crilv/Desktop/java项目/chapter10/src/fanshe/re.properties"));
-//            properties.load(new FileInputStream("D:\\JavaProject\\hsp_java\\src\\fanshe/re.properties"));
+//            properties.load(new FileInputStream("/Users/crilv/Desktop/java项目/chapter10/src/fanshe/re.properties"));
+            properties.load(new FileInputStream("D:\\JavaProject\\hsp_java\\src\\fanshe/re.properties"));
 
             String classfullpath = properties.get("classfullpath").toString();
             String method = properties.get("method").toString();
@@ -58,8 +56,25 @@ public class ReflectionTest {
             //获取对象的字段
             //Field field = aClass.getField("a"); // 不能得到私有属性
             Field field = aClass.getField("b"); // 不能得到私有属性
+            field.get(o); // 得到变量的值
+
+            // 获得构造器
+            Constructor<?> constructor = aClass.getConstructor();  //可以指定参数类型 默认是无参构造器
+            System.out.println(constructor);
+
+            Constructor<?> constructor1 = aClass.getConstructor(int.class);  // 调用参数构造器 就要传入对应的参数的class
+            System.out.println(constructor1);
+
+            //获得构造器可以用于构建对象
 
 
+
+            // 反射调用比正常调用慢
+//            method1.setAccessible(true); // 启动和禁用安全检查的开关  true表示 反射的对象在使用时取消访问检查,提高反射的效率  false相反则检查
+//            field.setAccessible(true);
+//            constructor.setAccessible(true);
+
+            //  应为他们都继承了这个类 AccessibleObject
 
 
 

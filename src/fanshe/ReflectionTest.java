@@ -3,6 +3,7 @@ package fanshe;
 import java.io.FileInputStream;
 import java.io.FileReader;
 import java.io.IOException;
+import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Properties;
@@ -13,13 +14,14 @@ public class ReflectionTest {
 
         Properties properties = new Properties();
         try {
-//            properties.load(new FileInputStream("/Users/crilv/Desktop/java项目/chapter10/src/fanshe/re.properties"));
-            properties.load(new FileInputStream("D:\\JavaProject\\hsp_java\\src\\fanshe/re.properties"));
+            properties.load(new FileInputStream("/Users/crilv/Desktop/java项目/chapter10/src/fanshe/re.properties"));
+//            properties.load(new FileInputStream("D:\\JavaProject\\hsp_java\\src\\fanshe/re.properties"));
 
             String classfullpath = properties.get("classfullpath").toString();
             String method = properties.get("method").toString();
             System.out.println(classfullpath);
             System.out.println(method);
+            String filed = properties.get("filed").toString();
 
             //创建一个对象  但此时拿到的累的信息 是字符串  无法通过传统的方式进行对象的创建 即 new
             // 所以 这就是反射的第一个作用 使用 一些信息就可以创建一个对象   而不是传统的定义了class文件 再通过new去创建
@@ -53,6 +55,9 @@ public class ReflectionTest {
             // 程序运行反射在运行期间 获取类的信息
             // 加载完信息后 会生成一个 Class类型类的对象实例  一个类只能在堆中产生一个Class类型类  它包含了加载对象的全部信息  像一面镜子 反射出类的所有信息 所以称之为反射
 
+            //获取对象的字段
+            //Field field = aClass.getField("a"); // 不能得到私有属性
+            Field field = aClass.getField("b"); // 不能得到私有属性
 
 
 
@@ -71,6 +76,8 @@ public class ReflectionTest {
         } catch (NoSuchMethodException e) {
             throw new RuntimeException(e);
         } catch (InvocationTargetException e) {
+            throw new RuntimeException(e);
+        } catch (NoSuchFieldException e) {
             throw new RuntimeException(e);
         }
 
